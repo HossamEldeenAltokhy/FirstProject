@@ -28,7 +28,7 @@ void PORTAas(int dir) {
             DDRA = 0x00;
             break;
         default:
-#warning "Wrong argument, use OUT or IN"
+//#warning "Wrong argument, use OUT or IN"
             break;
     }
 }
@@ -111,6 +111,26 @@ void PINDas(int pinNum, int dir) {
             DDRD &= ~(1 << pinNum);
             break;
     }
+}
+void setPORTA(int data) {
+
+    PORTA = data;
+
+}
+void setPORTB(int data) {
+
+    PORTB = data;
+
+}
+void setPORTC(int data) {
+
+    PORTC = data;
+
+}
+void setPORTD(int data) {
+
+    PORTD = data;
+
 }
 
 int isPressedA(int pinNum) {
@@ -201,4 +221,5 @@ void setPINC(int pinNum) {
 void setPIND(int pinNum) {
     PORTD |= (1 << pinNum);
 }
+
 

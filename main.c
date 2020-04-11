@@ -4,9 +4,12 @@
  *
  * Created on April 4, 2020, 6:24 PM
  */
+#define F_CPU 16000000UL
+
 
 #include <avr/io.h>
-//#include <util/delay.h>
+
+#include <util/delay.h>
 #include "Config.h"
 #include "DIO.h"
 
@@ -18,29 +21,36 @@
 #define portC           3
 #define portD           4
 
+int i = 0;
+
 int main(void) {
 
-    // Data Direction Register
-//    DDRA = 0xFF; // OUTPUT PORT
-    PORTAas(OUT);
-    PORTA = 0x00; // setPORTA(HIGH);
+    int data = 0b00000001;
     PORTCas(OUT);
-    PORTC = 0x00;
-    PINBas(BUTTON, IN);
-    PINDas(LED0, OUT);
-    
-    setPIN(LED0, portC);
+    PORTDas(OUT);
+
+
     while (1) {
-        // Loop until power OFF
-        if (isPressedB(BUTTON)) { //PINA & (1<<PIN_number)
-            //True Condition
-            //            PORTA |= (1<<LED); // Turn LED ON
-            setPIN(LED, portD);
-        } else {
-            // False Condition
-            //            PORTA &= ~(1<<LED);// Turn LED OFF
-            resetPIN(LED, portD);
+
+        for (i = 0; i < 7; i++) {
+            
+            setPORTD(data);
+            setPORTC(~data);
+            data = (data << 1);
+            _delay_ms(1000); // 1 second delay
+
         }
+        data = 0x80;
+        for (i = 0; i < 7; i++) {
+            
+            setPORTD(data);
+            setPORTC(~data);
+            data = (data >> 1);
+            _delay_ms(1000); // 1 second delay
+
+        }
+
+        data = 1;
     }
 }
 

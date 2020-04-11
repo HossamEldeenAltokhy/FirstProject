@@ -51,6 +51,10 @@ void PINBas(int pinNum, int dir);
 void PINCas(int pinNum, int dir);
 void PINDas(int pinNum, int dir);
 
+void setPORTA(int data);
+void setPORTB(int data);
+void setPORTC(int data);
+void setPORTD(int data);
 
 int isPressedA(int pinNum);
 int isPressedB(int pinNum);
