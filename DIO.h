@@ -73,6 +73,7 @@ void setPINC(int pinNum);
 
 void setPIND(int pinNum);
 
+void togglePIND(int pinNum);
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 

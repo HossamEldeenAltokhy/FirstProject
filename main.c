@@ -8,13 +8,15 @@
 
 
 #include <avr/io.h>
-
 #include <util/delay.h>
 #include "Config.h"
 #include "DIO.h"
+#include "lcd.h"
 
-#define BUTTON         0
+
+#define BUTTON2        2
 #define LED            3
+#define Buzzer         3
 
 #define portA           1
 #define portB           2
@@ -23,34 +25,38 @@
 
 int i = 0;
 
+char x[] = "LED is ON";
+char y[] = "LED is OFF";
+char flag = 0;
+
 int main(void) {
 
-    int data = 0b00000001;
-    PORTCas(OUT);
-    PORTDas(OUT);
 
 
+
+    LCD_Init();
+
+    resetPIN(Buzzer, portA); // Turn Buzzer OFF
+    PINDas(BUTTON2, IN);
+    PINDas(LED, OUT);
+    resetPIN(LED, portD); // LED2 init OFF
+
+    LCD_String(y);
     while (1) {
+        if (isPressedD(BUTTON2)) {
+            flag ^= 1;
+            togglePIND(LED);
 
-        for (i = 0; i < 7; i++) {
-            
-            setPORTD(data);
-            setPORTC(~data);
-            data = (data << 1);
-            _delay_ms(1000); // 1 second delay
-
-        }
-        data = 0x80;
-        for (i = 0; i < 7; i++) {
-            
-            setPORTD(data);
-            setPORTC(~data);
-            data = (data >> 1);
-            _delay_ms(1000); // 1 second delay
-
+            if (flag) {
+                LCD_Clear();
+                LCD_String(x);
+            } else {
+                LCD_Clear();
+                LCD_String(y);
+            }
+            _delay_ms(200);
         }
 
-        data = 1;
     }
 }
 

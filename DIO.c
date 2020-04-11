@@ -223,3 +223,7 @@ void setPIND(int pinNum) {
 }
 
 
+void togglePIND(int pinNum){
+    PORTD ^= (1<<pinNum);
+}
+
