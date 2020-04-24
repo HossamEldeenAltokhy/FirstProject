@@ -3,15 +3,15 @@
   <executable name="dist/default/production/FirstProject.X.production.elf">                 
     <memory name="program">              
       <units>bytes</units>                 
-      <length>16384</length>                 
-      <used>917</used>                     
-      <free>15467</free>                     
+      <length>32768</length>                 
+      <used>1819</used>                     
+      <free>30949</free>                     
     </memory>                              
     <memory name="data">                 
       <units>bytes</units>                 
-      <length>1024</length>                 
-      <used>22</used>                     
-      <free>1002</free>                     
+      <length>2048</length>                 
+      <used>21</used>                     
+      <free>2027</free>                     
     </memory>                              
   </executable>                            
 </project>                                 

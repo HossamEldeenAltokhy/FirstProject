@@ -18,8 +18,8 @@ Send 0x06 command (increment cursor)
 */
 void LCD_Init (void)  /* LCD Initialize function */
 {
-	LCD_Dir = 0xFF;		/* Make LCD port direction as o/p */
-	LCD_Dir_Control=0x0F; /* Make LCD port direction as o/p */
+	LCD_Dir = 0xF0;		/* Make LCD port direction as o/p */
+	LCD_Dir_Control= 0x0F; /* Make LCD port direction as o/p */
 	LCD_Port_Control &= ~(1<<2);
 	_delay_ms(20);		/* LCD Power ON delay always >15ms */
 	

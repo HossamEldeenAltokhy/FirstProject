@@ -10,6 +10,9 @@
 #include <avr/io.h>
 #include <avr/interrupt.h>
 #include <util/delay.h>
+#include <stdio.h>
+#include <stdlib.h>
+#include <string.h>
 
 // User-defined Headers
 #include "Config.h"
@@ -26,122 +29,118 @@
 #define portC           3
 #define portD           4
 
-int i = 0;
+//#define stepValue      48828125?
 
-char x[] = "LED is ON";
-char y[] = "LED is OFF";
-char flag = 0;
+char message[] = "Welcome";
+char str1[] = "Volt = ";
+char str2[] = " mV";
+char cl[] = "    ";
+
+void ADC_init() {
+    ADMUX = 0x00; // Channel 0
+    SFIOR |= (1<<ADTS1);
+    ADCSRA |= (1 << ADEN) | (1<<ADATE)|(1 << ADIE) | (1 << ADPS2) | (1 << ADPS1) | (1 << ADPS0);
+    
+}
+
+void selectChannel(unsigned int channelNo) { // 0~7
+    if (channelNo < 8) { // 00000001| 00000000
+        ADMUX &= ~(7 << 0); // 00000111  11111000
+        ADMUX |= channelNo;
+    } else {
+        //# warning ""
+    }
+}
+
+void startConv() {
+    ADCSRA |= (1 << ADSC);
+}
+
+int getADCdata() {
+    int data = 0;
+    data = ADCL;
+    data |= (ADCH << 8);
+
+    return data;
+}
+
+int getADCdataL() {
+    int data = 0;
+    data = (ADCH << 2);
+    return data;
+}
+
+ISR(INT0_vect){
+    static int i = 1 ;
+    
+    if(i){
+        startConv();
+        i = 0;
+    }
+}
+
+ISR(ADC_vect) {
+    static int switcher = 0;
+    char buffer[20];
+    int noOfSteps = getADCdata();
+
+
+    // convert steps to mV
+    int data = (5 * noOfSteps) / 1.024;
+
+    // Display
+    itoa(data, buffer, 10);
+    if (switcher) {
+        LCD_String_xy(1, 7, cl);
+        LCD_String_xy(1, 7, buffer);
+        selectChannel(0);
+        switcher = 0;
+    } else {
+        LCD_String_xy(0, 7, cl);
+        LCD_String_xy(0, 7, buffer);
+        selectChannel(1);
+        switcher = 1;
+    }
+
+    _delay_ms(1000);
+
+    //    Restart Conversion every ISR
+//    startConv();
+}
+
 
 void INT0_init() {
     MCUCR |= (1 << ISC01) | (1 << ISC00); // Rising Edge
     GICR |= (1 << INT0);
 }
 
-void INT1_init() {
-    MCUCR |= (1 << ISC11) | (1 << ISC10); // Rising Edge
-    GICR |= (1 << INT1);
-}
-
-void INT2_init() {
-    MCUCSR |= (1 << ISC2); // Rising Edge
-    GICR |= (1 << INT2);
-}
-
-// _VECTOR(1)
-ISR(INT0_vect) {
-    // CODE
-    flag ^= 1;
-    togglePIND(LED);
-
-    if (flag) {
-        LCD_Clear();
-        LCD_String(x);
-    } else {
-        LCD_Clear();
-        LCD_String(y);
-    }
-}
-
 
 int main(void) {
 
+    PORTCas(OUT);
+    PORTDas(OUT);
+    
     INT0_init();
-
-    // Enable Global Interrupt
-    sei();
-
     LCD_Init();
-    resetPIN(Buzzer, portA); // Turn Buzzer OFF
-    PINDas(BUTTON2, IN);
-    PINDas(LED, OUT);
-    resetPIN(LED, portD); // LED2 init OFF
-    LCD_String(y);
+    ADC_init(); // Sensor on ADC0
+
+
+    sei();
+    LCD_String_xy(0, 0, str1);
+    LCD_String_xy(0, 13, str2);
+    LCD_String_xy(1, 0, str1);
+    LCD_String_xy(1, 13, str2);
+    startConv();
 
     while (1) {
 
 
-//        _delay_ms(200); // wait till user finger up
 
     }
 }
 
 
 
-
-
-
-
-
-
-/*
- 
- * 
- * MCUCR:
-
-INT0:
-
-ISC01 -- > 0  , ISC00 -- > 0    (LOW LEVEL)
-ISC01 -- > 0  , ISC00 -- > 1	(Toggle)
-ISC01 -- > 1  , ISC00 -- > 0	(Falling Edge)
-ISC01 -- > 1  , ISC00 -- > 1	(Rising Edge)
-
-INT1:
-
-ISC11 -- > 0  , ISC10 -- > 0    (LOW LEVEL)
-ISC11 -- > 0  , ISC10 -- > 1	(Toggle)
-ISC11 -- > 1  , ISC10 -- > 0	(Falling Edge)
-ISC11 -- > 1  , ISC10 -- > 1	(Rising Edge)
-------------------------------------------
-MCUCSR:
-
-INT2:
-
-ISC2 -- > 0 (Falling Edge)
-ISC2 -- > 1 (Rising Edge)
-
-------------------------------------------
-GICR:
-
-INT0:
-INT0 -- > 1  Enabled
-
-INT1:
-INT1 -- > 1  Enabled
-
-INT2:
-INT2 -- > 1  Enabled
-------------------------------------------
-
-GIFR:
-------------------------------------------
-i-bit SREG
-sei();
-cli();
-------------------------------------------
-
- 
- 
- */
 
 
 
