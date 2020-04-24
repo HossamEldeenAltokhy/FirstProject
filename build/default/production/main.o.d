@@ -22,7 +22,7 @@ build/default/production/main.o.d build/default/production/main.o: main.c \
  Config.h \
  c:\program\ files\ (x86)\microchip\xc8\v2.10\avr\lib\gcc\avr\5.4.0\include\xc.h \
  c:\program\ files\ (x86)\microchip\xc8\v2.10\avr\lib\gcc\avr\5.4.0\include\cci.h \
- DIO.h lcd.h
+ DIO.h lcd.h ADC.h
 
 c:\program\ files\ (x86)\microchip\xc8\v2.10\avr\avr\include\avr\io.h:
 
@@ -73,3 +73,5 @@ c:\program\ files\ (x86)\microchip\xc8\v2.10\avr\lib\gcc\avr\5.4.0\include\cci.h
 DIO.h:
 
 lcd.h:
+
+ADC.h:

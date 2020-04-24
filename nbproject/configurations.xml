@@ -8,6 +8,7 @@
       <itemPath>DIO.h</itemPath>
       <itemPath>Config.h</itemPath>
       <itemPath>lcd.h</itemPath>
+      <itemPath>ADC.h</itemPath>
     </logicalFolder>
     <logicalFolder name="LinkerScript"
                    displayName="Linker Files"
@@ -19,6 +20,7 @@
       <itemPath>main.c</itemPath>
       <itemPath>DIO.c</itemPath>
       <itemPath>lcd.c</itemPath>
+      <itemPath>ADC.c</itemPath>
     </logicalFolder>
     <logicalFolder name="ExternalFiles"
                    displayName="Important Files"
