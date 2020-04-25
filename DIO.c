@@ -28,7 +28,7 @@ void PORTAas(int dir) {
             DDRA = 0x00;
             break;
         default:
-//#warning "Wrong argument, use OUT or IN"
+            //#warning "Wrong argument, use OUT or IN"
             break;
     }
 }
@@ -112,21 +112,25 @@ void PINDas(int pinNum, int dir) {
             break;
     }
 }
+
 void setPORTA(int data) {
 
     PORTA = data;
 
 }
+
 void setPORTB(int data) {
 
     PORTB = data;
 
 }
+
 void setPORTC(int data) {
 
     PORTC = data;
 
 }
+
 void setPORTD(int data) {
 
     PORTD = data;
@@ -222,8 +226,32 @@ void setPIND(int pinNum) {
     PORTD |= (1 << pinNum);
 }
 
-
-void togglePIND(int pinNum){
-    PORTD ^= (1<<pinNum);
+void togglePINA(int pinNum) {
+    PORTA ^= (1 << pinNum);
+}
+void togglePINB(int pinNum) {
+    PORTB ^= (1 << pinNum);
+}
+void togglePINC(int pinNum) {
+    PORTC ^= (1 << pinNum);
 }
 
+void togglePIND(int pinNum) {
+    PORTD ^= (1 << pinNum);
+}
+
+void resetPINA(int pinNum) {
+    PORTA &= ~(1 << pinNum);
+}
+
+void resetPINB(int pinNum) {
+    PORTB &= ~(1 << pinNum);
+}
+
+void resetPINC(int pinNum) {
+    PORTC &= ~(1 << pinNum);
+}
+
+void resetPIND(int pinNum) {
+    PORTD &= ~(1 << pinNum);
+}

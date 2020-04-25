@@ -30,6 +30,15 @@
 #define portC           3
 #define portD           4
 
+#define Normal          0
+#define PWM             1
+#define CTC             2
+#define FPWM            3
+
+#define OC0_Closed      0
+#define OC0_Toggle      1
+#define OC0_Clear       2       
+#define OC0_Set         3       
 //#define stepValue      48828125?
 
 char message[] = "Welcome";
@@ -37,14 +46,8 @@ char str1[] = "Volt = ";
 char str2[] = " mV";
 char cl[] = "    ";
 
-
-ISR(INT0_vect){
-    static int i = 1 ;
-    
-    if(i){
-        startConv();
-        i = 0;
-    }
+ISR(INT0_vect) {
+    OCR0 += 20;
 }
 
 ISR(ADC_vect) {
@@ -73,31 +76,76 @@ ISR(ADC_vect) {
     _delay_ms(1000);
 
     //    Restart Conversion every ISR
-//    startConv();
+    //    startConv();
 }
-
 
 void INT0_init() {
     MCUCR |= (1 << ISC01) | (1 << ISC00); // Rising Edge
     GICR |= (1 << INT0);
 }
 
-void Timer0_init(){
-    
-    TCCR0 |= (1<<CS02)| (1<<CS00); // CLKio/ 1024 // Normal Mode
-    TIMSK |= (1<<TOIE0);
-    
+void Timer0_init() {
+
+    TCCR0 |= (1 << WGM00) | (1 << COM01) | (1 << CS02) | (1 << CS00); // CLKio/ 1024 // PWM Mode
+    //    TIMSK |= (1 << OCIE0); // Enable Timer Interrupt CompareMatch
+    OCR0 = 0x00;
+    PINBas(3, OUT); // OC0 pin as OUTPUT pin
 }
 
-ISR(TIMER0_OVF_vect){
-    static int i = 1;
-    if(i){
-        setPORTC(0xFF);
-        i=0;
+void _Timer0_init(char TimerMode, char OC0Mode, char OCR0_Value) {
+
+    switch (TimerMode) {
+        case Normal:
+            //
+            break;
+        case PWM:
+            //
+            break;
+        case CTC:
+            //
+            break;
+        case FPWM:
+            //
+            break;
+
     }
-    else{
-        setPORTC(0x00);
-        i=1;
+    TCCR0 |= (OC0Mode<<4);
+    OCR0 = OCR0_Value;
+    TCCR0 |= (1 << CS02) | (1 << CS00);
+    PINBas(3, OUT); // OC0 pin as OUTPUT pin
+}
+
+void Timer0_stop() {
+    // No Clock 
+    TCCR0 &= ~((1 << CS02) | (1 << CS01) | (1 << CS00));
+}
+
+void Timer0_restart() {
+    // No Clock 
+    TCCR0 |= (1 << CS02) | (1 << CS00);
+}
+
+ISR(TIMER0_OVF_vect) {
+
+}
+
+ISR(TIMER0_COMP_vect) {
+
+    static int IntervalSecond = 0;
+
+    IntervalSecond++;
+    static int i = 1;
+    if (IntervalSecond == 62) {
+        // Every Second
+        if (i) {
+            setPORTC(0xFF);
+            i = 0;
+        } else {
+            setPORTC(0x00);
+            i = 1;
+        }
+
+        IntervalSecond = 0;
     }
 }
 
@@ -105,13 +153,15 @@ int main(void) {
 
     PORTCas(OUT);
     PORTDas(OUT);
+
+    _delay_ms(2000);
     Timer0_init();
     INT0_init();
     LCD_Init();
     ADC_init(); // Sensor on ADC0
 
 
-    sei();
+    sei(); // Enable Global Interrupt
     LCD_String_xy(0, 0, str1);
     LCD_String_xy(0, 13, str2);
     LCD_String_xy(1, 0, str1);
@@ -124,16 +174,3 @@ int main(void) {
 
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

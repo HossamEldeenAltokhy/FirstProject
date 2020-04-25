@@ -28,62 +28,8 @@
 
 // This is a guard condition so that contents of this file are not included
 // more than once.  
-#ifndef DIO_H
-#define	DIO_H
-
-#define OUT    1
-#define IN     0
-
-
-void _setPIN(int pinNum);
-
-void _resetPIN(int pinNum);
-
-// Data Direction Functions for PORT
-void PORTAas(int dir);
-void PORTBas(int dir);
-void PORTCas(int dir);
-void PORTDas(int dir);
-
-// Data Direction Functions for PINs
-void PINAas(int pinNum, int dir);
-void PINBas(int pinNum, int dir);
-void PINCas(int pinNum, int dir);
-void PINDas(int pinNum, int dir);
-
-void setPORTA(int data);
-void setPORTB(int data);
-void setPORTC(int data);
-void setPORTD(int data);
-
-int isPressedA(int pinNum);
-int isPressedB(int pinNum);
-int isPressedC(int pinNum);
-int isPressedD(int pinNum);
-
-void setPIN(int pinNum, char port);
-
-void resetPIN(int pinNum, char port);
-
-void setPINA(int pinNum);
-
-void setPINB(int pinNum);
-
-void setPINC(int pinNum);
-
-void setPIND(int pinNum);
-
-void togglePINA(int pinNum);
-void togglePINB(int pinNum);
-void togglePINC(int pinNum);
-void togglePIND(int pinNum);
-
-void resetPINA(int pinNum);
-void resetPINB(int pinNum);
-void resetPINC(int pinNum);
-void resetPIND(int pinNum);
-
-void togglePIND(int pinNum);
+#ifndef HEAD_H
+#define	HEAD_H
 
 #include <xc.h> // include processor files - each processor file is guarded.  
 
